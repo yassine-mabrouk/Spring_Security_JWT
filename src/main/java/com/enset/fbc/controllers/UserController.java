@@ -18,7 +18,7 @@ public class UserController {
     UserService userService;
   @Autowired
     UserRepository userRepository;
-    // recuperer un user
+    // get  a user
     @GetMapping("/{id}")
     public UserEntity getUser(@PathVariable Long id ){
         Optional<UserEntity> user =userRepository.findById(id);
@@ -42,8 +42,8 @@ public class UserController {
         return  "delteUser was called ";
     }
     @GetMapping
-    public  String getDta(){
-        return "connected data ";
+    public  String getUsers (){
+        return "Get  all users  was called  ";
     }
 
 }
