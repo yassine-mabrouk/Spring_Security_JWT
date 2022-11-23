@@ -45,14 +45,11 @@ public class AuthentifiactionFilrer   extends UsernamePasswordAuthenticationFilt
             throw  new RuntimeException(e.getMessage());
         }
     }
-
     ///if the user is exist in the BD this function was executed
-
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         User user = (User) authResult.getPrincipal();
          // make token ( JWT ) and delevred to the client token= string encoded (header.payload.signature)
-
           String token = Jwts.builder()
                 .setSubject(user.getUsername())
                 .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))

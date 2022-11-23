@@ -21,7 +21,6 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
-
     @Override
     public UserEntity createUser(UserEntity userDto) {
         UserEntity checkUser = userRepository.findByEmail(userDto.getEmail());
@@ -31,7 +30,6 @@ public class UserServiceImpl implements UserService {
          UserEntity saved = userRepository.save(userDto);
           return saved;
     }
-
     @Override
     public UserEntity getUser(String email) {
         UserEntity userDto = userRepository.findByEmail(email);

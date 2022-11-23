@@ -21,9 +21,8 @@ public class WebSecurity  extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .cors()   // for communication betweenn other app
-                .and()
+        http.cors()
+                .and()//// for communication betweenn other app
                 .csrf().disable()  // desable csrf because we work with stateless
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
