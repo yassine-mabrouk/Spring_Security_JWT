@@ -1,6 +1,8 @@
 package com.enset.fbc.serviceImpli;
 
+import com.enset.fbc.entities.RoleEntity;
 import com.enset.fbc.entities.UserEntity;
+import com.enset.fbc.repositories.RoleRepository;
 import com.enset.fbc.repositories.UserRepository;
 import com.enset.fbc.service.UserService;
 
@@ -14,11 +16,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    RoleRepository roleRepository ;
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
     @Override
@@ -35,7 +41,35 @@ public class UserServiceImpl implements UserService {
         UserEntity userDto = userRepository.findByEmail(email);
         return userDto;
     }
-//    retrieve user from BD
+
+    @Override
+    public List<UserEntity> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public RoleEntity createRole(RoleEntity role) {
+        return roleRepository.save(role);
+    }
+
+    @Override
+    public void addRoleToUser(String email, String roleName) {
+            UserEntity user = userRepository.findByEmail(email);
+            RoleEntity role = roleRepository.findByRoleName(roleName);
+            user.getRoles().add(role);
+            userRepository.save(user);
+    }
+
+    @Override
+    public UserEntity getUserById(Long id) {
+        Optional<UserEntity> user =userRepository.findById(id);
+
+        if (!user.isPresent())
+            throw new RuntimeException("Element with id = " + id+ " is not found");
+        return  userRepository.findById(id).get();
+    }
+
+    //    retrieve user from BD
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
          UserEntity user =  userRepository.findByEmail(email) ;

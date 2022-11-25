@@ -9,6 +9,7 @@ import com.enset.fbc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -21,11 +22,11 @@ public class UserController {
     // get  a user
     @GetMapping("/{id}")
     public UserEntity getUser(@PathVariable Long id ){
-        Optional<UserEntity> user =userRepository.findById(id);
-
-        if (!user.isPresent())
-            throw new RuntimeException("Element with id = " + id+ " is not found");
-     return  userRepository.findById(id).get();
+          return  userService.getUserById(id);
+    }
+    @GetMapping
+    public List<UserEntity> getAllUsers(){
+        return  userService.getAllUsers();
     }
 
     @PostMapping
@@ -40,10 +41,6 @@ public class UserController {
      @DeleteMapping
      public String deleteUser(){
         return  "delteUser was called ";
-    }
-    @GetMapping
-    public  String getUsers (){
-        return "Get  all users  was called  ";
     }
 
 }
