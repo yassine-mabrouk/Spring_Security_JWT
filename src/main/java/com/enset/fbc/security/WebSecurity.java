@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFilter;
 
 @EnableWebSecurity
 public class WebSecurity  extends WebSecurityConfigurerAdapter {
@@ -27,6 +28,8 @@ public class WebSecurity  extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
                 .permitAll()
+                .antMatchers(HttpMethod.GET , "/refreshToken/**").permitAll()
+                .antMatchers(HttpMethod.DELETE,"/users/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and().addFilter(this.getAuthenticationFilter())
                 //  .addFilter(new AuthenticationFilter(authenticationManager()));

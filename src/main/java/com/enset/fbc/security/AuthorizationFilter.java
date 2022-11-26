@@ -1,8 +1,12 @@
 package com.enset.fbc.security;
 
+import com.enset.fbc.entities.RoleEntity;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -12,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class AuthorizationFilter extends BasicAuthenticationFilter {
     public AuthorizationFilter(AuthenticationManager authManager) {
@@ -23,16 +29,20 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
                                     HttpServletResponse res,
                                     FilterChain chain) throws IOException, ServletException {
 
-        String header = req.getHeader(SecurityConstants.HEADER_STRING);
-
-        if (header == null || !header.startsWith(SecurityConstants.TOKEN_PREFIX)) {
+        if (req.getServletPath().equals("refreshToken")) {
             chain.doFilter(req, res);
-            return;
+        }  else {
+            String header = req.getHeader(SecurityConstants.HEADER_STRING);
+            if (header == null || !header.startsWith(SecurityConstants.TOKEN_PREFIX)) {
+                chain.doFilter(req, res);
+                return;
+            }
+            UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
+            // autenticat user
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            // pass au suivant
+            chain.doFilter(req, res);
         }
-
-        UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        chain.doFilter(req, res);
     }
 
 
@@ -43,19 +53,24 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
 
             token = token.replace(SecurityConstants.TOKEN_PREFIX, "");
 
-            String user = Jwts.parser()
+
+       Claims claims = Jwts.parser()
                     .setSigningKey( SecurityConstants.TOKEN_SECRET )
                     .parseClaimsJws( token )
-                    .getBody()
-                    .getSubject();
-
-            if (user != null) {
-                return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+                    .getBody();
+            ArrayList<String> roles = (ArrayList<String>) claims.get("roles");
+            Collection<GrantedAuthority> grantedAuthority = new ArrayList<>();
+            if (roles !=null ) {
+                for (String str : roles) {
+                    grantedAuthority.add(new SimpleGrantedAuthority(str));
+                }
             }
 
+            if (claims.getSubject() != null) {
+                return new UsernamePasswordAuthenticationToken(claims.getSubject(), null,grantedAuthority );
+            }
             return null;
         }
-
         return null;
     }
 

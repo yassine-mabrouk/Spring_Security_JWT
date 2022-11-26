@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AuthentifiactionFilrer   extends UsernamePasswordAuthenticationFilter {
 
@@ -50,23 +51,32 @@ public class AuthentifiactionFilrer   extends UsernamePasswordAuthenticationFilt
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         User user = (User) authResult.getPrincipal();
          // make token ( JWT ) and delevred to the client token= string encoded (header.payload.signature)
-          String token = Jwts.builder()
+          String Accesstoken = Jwts.builder()
                 .setSubject(user.getUsername())
                 .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
+                 .setIssuer(request.getRequestURL().toString())
+                  // set private claims
+                  .claim("test", "My Private claim ")
+                  .claim("roles" , user.getAuthorities().stream().map(g-> g.getAuthority()).collect(Collectors.toList()))
                 .signWith(SignatureAlgorithm.HS256, SecurityConstants.TOKEN_SECRET)
-                  .setIssuer(request.getRequestURL().toString())
                 .compact();
+        String RefreshToken = Jwts.builder()
+                .setSubject(user.getUsername())
+                .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
+                .setIssuer(request.getRequestURL().toString())
+                // set private claims
+                .claim("test", "My Private claim ")
+                .signWith(SignatureAlgorithm.HS256, SecurityConstants.TOKEN_SECRET)
+                .compact();
+
 
         response.setContentType("application/json");
         response.addHeader("Username", user.getUsername());
-        response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX+ token);
+        response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX+ Accesstoken);
         Map<String , String > idTokens = new HashMap<>();
-        idTokens.put("Token", token);
+        idTokens.put("Accesstoken", Accesstoken);
+        idTokens.put("RefreshToken", RefreshToken);
 
-        // send token in response body
-        //  method 1
-        //        response.getWriter().write("{\"token\": \"" + token + "\"}");
-        // method
         new ObjectMapper().writeValue(response.getOutputStream(),idTokens);
 
         System.out.println(response);

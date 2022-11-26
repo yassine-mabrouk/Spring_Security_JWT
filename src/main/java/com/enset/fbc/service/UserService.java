@@ -14,5 +14,6 @@ public interface UserService  extends UserDetailsService {
     public RoleEntity createRole ( RoleEntity role );
     public  void addRoleToUser (String email , String roleName );
     UserEntity getUserById (Long id );
-
+    public  void deleteUser (Long id ) ;
+   public UserEntity getUserByEmail ( String email);
 }
