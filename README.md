@@ -22,7 +22,8 @@ Create an authentication microservice using Spring Security and JWT This service
 
   }'
 
-  - Login
+- Login
+
       curl --request POST \
       --url http://localhost:8081/users/login \
       --header 'Authorization: Bearer undefined' \
@@ -36,10 +37,10 @@ Create an authentication microservice using Spring Security and JWT This service
 
 - Get All users
 
-    curl --request GET \
-    --url http://localhost:8081/users \
-    --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMUBnbWFpbC5jb20iLCJleHAiOjE2Njk1MDIyNTcsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MS91c2Vycy9yZWZyZXNoVG9rZW4iLCJ0ZXN0IjoiTXkgUHJpdmF0ZSBjbGFpbSAiLCJyb2xlcyI6WyJVU0VSIl19.NK4IrZeyQ_SBv0bsfCxDIzLdmxi8bB2A1j9lfmMPD8M' \
-    --cookie JSESSIONID=AD1203130C86831EBD50A1A73222A3C0
+      curl --request GET \
+      --url http://localhost:8081/users \
+      --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMUBnbWFpbC5jb20iLCJleHAiOjE2Njk1MDIyNTcsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MS91c2Vycy9yZWZyZXNoVG9rZW4iLCJ0ZXN0IjoiTXkgUHJpdmF0ZSBjbGFpbSAiLCJyb2xlcyI6WyJVU0VSIl19.NK4IrZeyQ_SBv0bsfCxDIzLdmxi8bB2A1j9lfmMPD8M' \
+      --cookie JSESSIONID=AD1203130C86831EBD50A1A73222A3C0
 
 - Add Role to User
   
@@ -60,3 +61,4 @@ Create an authentication microservice using Spring Security and JWT This service
       --url http://localhost:8081/users/refreshToken \
       --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMUBnbWFpbC5jb20iLCJleHAiOjE2Njk1MDIyNDEsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA4MS91c2Vycy9sb2dpbiIsInRlc3QiOiJNeSBQcml2YXRlIGNsYWltICJ9.RrlSzxLH5bEU5lKJLGeE1ESeNSDi200_bZE4tlr55MU' \
       --cookie JSESSIONID=AD1203130C86831EBD50A1A73222A3C0
+### Enjoy learning 
